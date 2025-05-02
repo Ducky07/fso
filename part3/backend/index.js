@@ -4,10 +4,11 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config();
 
-import "./db.js";
+import "./utils/db.js";
 
 import personsRouter from "./controllers/persons.js";
 import Person from "./models/person.js";
+import { errorHandler, unknownEndpoint } from "./middleware/error.js";
 
 const app = express();
 
@@ -33,6 +34,9 @@ app.get("/info", (req, res) => {
     );
   });
 });
+
+app.use(unknownEndpoint);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
