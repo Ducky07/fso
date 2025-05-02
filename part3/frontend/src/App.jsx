@@ -16,7 +16,7 @@ const App = () => {
     numberService.getAll().then((data) => {
       setPersons(data);
     });
-  }, []);
+  }, [notificationMessage]);
 
   const addPerson = (event) => {
     event.preventDefault();
