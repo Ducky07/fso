@@ -4,12 +4,12 @@
   "description": "Phonebook Nodejs Backend",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
     "build:ui": "rm -rf public && cd ../frontend && npm run build",
     "build": "npm install --omit=dev",
     "deploy": "npm run build:ui && npm run start",
-    "test": "node --test",
+    "test": "NODE_ENV=test node --test",
     "lint": "eslint ."
   },
   "author": "Jack Valley",
@@ -26,6 +26,7 @@
     "@eslint/js": "^9.26.0",
     "eslint": "^9.25.1",
     "globals": "^16.0.0",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "supertest": "^7.1.4"
   }
 }
