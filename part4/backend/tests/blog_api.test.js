@@ -73,6 +73,30 @@ test("blog without title and url is not added", async () => {
   await api.post("/api/blogs").send(newBlog).expect(400);
 });
 
+test("update an individual blog post", async () => {
+  const blogsAtStart = await api.get("/api/blogs");
+  const blogToUpdate = blogsAtStart.body[0];
+
+  const updatedBlog = {
+    ...blogToUpdate,
+    likes: blogToUpdate.likes + 1,
+  };
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlog)
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+
+  const blogsAtEnd = await api.get("/api/blogs");
+  const updated = blogsAtEnd.body.find((b) => b.id === blogToUpdate.id);
+
+  if (updated.likes !== blogToUpdate.likes + 1) {
+    throw new Error("Blog post was not updated");
+  }
+  await api.put(`/api/blogs/${blogToUpdate.id}`).send(blogToUpdate).expect(200);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
