@@ -1,0 +1,12 @@
+{
+  "name": "part3-monorepo",
+  "version": "1.0.0",
+  "description": "Phonebook Application",
+  "author": "Jack Valley",
+  "license": "ISC",
+  "scripts": {
+    "start": "npm run start --prefix backend",
+    "build": "npm run build:ui --prefix backend && npm run build --prefix backend",
+    "deploy": "npm run build && npm run start"
+  }
+}
