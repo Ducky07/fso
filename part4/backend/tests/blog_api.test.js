@@ -62,6 +62,8 @@ test("if likes property is missing, it defaults to 0", async () => {
   if (response.body.likes !== 0) {
     throw new Error("Likes did not default to 0");
   }
+  // remove added blog to keep tests idempotent
+  await api.delete(`/api/blogs/${response.body.id}`).expect(204);
 });
 
 test("blog without title and url is not added", async () => {

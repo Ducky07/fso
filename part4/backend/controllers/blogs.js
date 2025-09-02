@@ -1,15 +1,26 @@
 import express from "express";
+import jwt from "jsonwebtoken";
 import Blog from "../models/blog.js";
+import User from "../models/user.js";
 
 const blogsRouter = express.Router();
 
+const getTokenFrom = (request) => {
+  const authorization = request.get("authorization");
+  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+    return authorization.substring(7);
+  }
+  return null;
+};
+
 // all blogs
-blogsRouter.get("/", (request, response, next) => {
-  Blog.find({})
-    .then((blogs) => {
-      response.json(blogs);
-    })
-    .catch((error) => next(error));
+blogsRouter.get("/", async (request, response, next) => {
+  const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
+  try {
+    response.json(blogs);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // single blog by ID
@@ -39,11 +50,23 @@ blogsRouter.delete("/:id", (request, response, next) => {
 });
 
 // add a new blog
-blogsRouter.post("/", (request, response, next) => {
+blogsRouter.post("/", (request, response) => {
   const body = request.body;
+  const token = getTokenFrom(request);
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: "token missing or invalid" });
+  }
+  const user = User.findById(decodedToken.id);
+  console.log(decodedToken.id);
   if (!body.title || !body.author || !body.url) {
     return response.status(400).json({
       error: "title, author or url is missing",
+    });
+  }
+  if (!user) {
+    return response.status(400).json({
+      error: "userId missing or invalid",
     });
   }
   const blog = new Blog({
@@ -51,13 +74,17 @@ blogsRouter.post("/", (request, response, next) => {
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
+    user: user._id,
   });
   blog
     .save()
     .then((savedBlog) => {
       response.status(201).json(savedBlog);
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      console.error(error);
+      response.status(500).json({ error: error.message });
+    });
 });
 
 // update a blog
