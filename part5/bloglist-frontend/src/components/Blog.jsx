@@ -26,26 +26,28 @@ const Blog = ({ blog, handleDelete, handleLike }) => {
         <p style={{ fontWeight: "Bold" }}>Author:</p> {blog.author}
         <button onClick={toggleVisibility}>{visible ? "Hide" : "View"}</button>
       </div>
-      <div style={{ display: visible ? "" : "none", marginTop: "0.5rem" }}>
-        <p>
-          <span style={{ fontWeight: "Bold" }}>URL:</span> {blog.url}
-        </p>
-        <p>
-          <span style={{ fontWeight: "Bold" }}>Likes:</span> {blog.likes}
-          <button
-            style={{ marginLeft: "0.5rem" }}
-            onClick={() => handleLike(blog)}
-          >
-            Like
+      {visible && (
+        <div style={{ display: visible ? "" : "none", marginTop: "0.5rem" }}>
+          <p>
+            <span style={{ fontWeight: "Bold" }}>URL:</span> {blog.url}
+          </p>
+          <p>
+            <span style={{ fontWeight: "Bold" }}>Likes:</span> {blog.likes}
+            <button
+              style={{ marginLeft: "0.5rem" }}
+              onClick={() => handleLike(blog)}
+            >
+              Like
+            </button>
+          </p>
+          <p>
+            <span style={{ fontWeight: "Bold" }}>User:</span> {blog.user.name}
+          </p>
+          <button onClick={confirmAndDelete} style={{ margin: "1rem 0" }}>
+            Remove
           </button>
-        </p>
-        <p>
-          <span style={{ fontWeight: "Bold" }}>User:</span> {blog.user.name}
-        </p>
-        <button onClick={confirmAndDelete} style={{ margin: "1rem 0" }}>
-          Remove
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
