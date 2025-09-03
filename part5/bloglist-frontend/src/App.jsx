@@ -10,6 +10,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [notification, setNotification] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
@@ -32,6 +33,7 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(blogObject);
       setBlogs(blogs.concat(returnedBlog));
+      setShowForm(false);
       setNotification(
         `A new blog "${returnedBlog.title}" by ${returnedBlog.author} added`,
       );
@@ -71,6 +73,30 @@ const App = () => {
     blogService.setToken(null);
   };
 
+  const handleLike = async (likedBlog) => {
+    try {
+      const updatedBlog = {
+        ...likedBlog,
+        likes: likedBlog.likes + 1,
+        user: likedBlog.user.id,
+      };
+      await blogService.update(likedBlog.id, updatedBlog);
+      const updatedBlogWithUser = { ...updatedBlog, user: likedBlog.user };
+      setBlogs(
+        blogs.map((blog) =>
+          blog.id === likedBlog.id ? updatedBlogWithUser : blog,
+        ),
+      );
+    } catch (exception) {
+      setErrorMessage("Error liking blog:" + exception.message);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
@@ -91,9 +117,28 @@ const App = () => {
         {notification && <div style={{ color: "green" }}>{notification}</div>}
         {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
       </div>
-      <BlogForm createBlog={createBlog} />
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} handleDelete={handleDeleteBlog} />
+      {showForm ? (
+        <div>
+          <BlogForm createBlog={createBlog} setShowForm={setShowForm} />
+          <button
+            onClick={() => setShowForm(false)}
+            style={{ margin: "1rem 0" }}
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button onClick={() => setShowForm(true)} style={{ margin: "1rem 0" }}>
+          Create new blog
+        </button>
+      )}
+      {sortedBlogs.map((blog) => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          handleDelete={handleDeleteBlog}
+          handleLike={handleLike}
+        />
       ))}
     </div>
   );

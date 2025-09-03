@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = ({ createBlog, closeForm }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -18,6 +18,7 @@ const BlogForm = ({ createBlog }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (closeForm) closeForm();
     if (!title || !author || !url) {
       setErrorMessage("Title, author, and URL are required.");
       setTimeout(() => {
