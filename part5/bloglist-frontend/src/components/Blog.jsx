@@ -22,9 +22,11 @@ const Blog = ({ blog, handleDelete, handleLike }) => {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-        <p style={{ fontWeight: "Bold" }}>Title:</p> {blog.title}
-        <p style={{ fontWeight: "Bold" }}>Author:</p> {blog.author}
-        <button onClick={toggleVisibility}>{visible ? "Hide" : "View"}</button>
+        <p style={{ fontWeight: "Bold" }}>Title: </p>{" "}
+        <span title={blog.title}>{blog.title}</span>
+        <p style={{ fontWeight: "Bold" }}> Author: </p>{" "}
+        <span title={blog.author}>{blog.author}</span>
+        <button onClick={toggleVisibility}>{visible ? "Hide" : " View"}</button>
       </div>
       {visible && (
         <div style={{ display: visible ? "" : "none", marginTop: "0.5rem" }}>

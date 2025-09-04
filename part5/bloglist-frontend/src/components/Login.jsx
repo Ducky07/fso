@@ -25,8 +25,9 @@ const Login = ({ onLogin }) => {
       {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
       <form onSubmit={handleSubmit}>
         <div>
-          username
+          Username
           <input
+            placeholder="Username"
             type="text"
             value={username}
             name="Username"
@@ -34,15 +35,16 @@ const Login = ({ onLogin }) => {
           />
         </div>
         <div>
-          password
+          Password
           <input
+            placeholder="Password"
             type="password"
             value={password}
             name="Password"
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type="submit">login</button>
+        <button type="submit">Login</button>
       </form>
     </div>
   );

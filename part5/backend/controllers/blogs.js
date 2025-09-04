@@ -113,4 +113,14 @@ blogsRouter.put("/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
+// reset blogs
+blogsRouter.post("/testing/reset", async (request, response, next) => {
+  try {
+    await Blog.deleteMany({});
+    response.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default blogsRouter;

@@ -68,4 +68,14 @@ usersRouter.delete("/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
+// reset users
+usersRouter.post("/testing/reset", async (request, response, next) => {
+  try {
+    await User.deleteMany({});
+    response.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default usersRouter;
